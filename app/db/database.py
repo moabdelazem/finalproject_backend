@@ -20,3 +20,12 @@ def create_tables():
 
     """
     Base.metadata.create_all(bind=engine)
+
+
+# Get a database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
