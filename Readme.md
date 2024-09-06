@@ -4,7 +4,7 @@ API Backend With FastAPI to manage create books, user with privliged admin auth
 
 # 1. How Our App Strucure
 
-![BookSnippet Structure](~/docs/assets/app-structure.png)
+![BookSnippet Structure](docs/assets/app-structure.png)
 
 ## Endpoints
 
