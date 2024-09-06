@@ -95,3 +95,18 @@ def delete_book(
     db.delete(book)
     db.commit()
     return {"message": "Book deleted successfully"}
+
+
+@router.get("/")
+def read_books(db: Session = Depends(get_db)):
+    """
+    Retrieve all books from the database.
+
+    Parameters:
+    - db (Session): The database session.
+
+    Returns:
+    - list: A list of all books in the database.
+    """
+    books = db.query(Book).all()
+    return books
