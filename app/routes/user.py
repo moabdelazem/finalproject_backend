@@ -7,11 +7,7 @@ from app.services.dependencies import create_access_token, verify_password
 from app.db.database import get_db
 from app.models import User
 from jose import JWTError, jwt
-from dotenv import load_dotenv
 import os
-
-# Load environment variables
-load_dotenv()
 
 # Create a new APIRouter instance
 router = APIRouter()

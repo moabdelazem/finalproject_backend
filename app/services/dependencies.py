@@ -7,10 +7,6 @@ from fastapi.security import OAuth2PasswordBearer
 from app.models import models
 from app.db.database import get_db
 import os
-from dotenv import load_dotenv
-
-# Load the environment variables
-load_dotenv()
 
 # Secret key and JWT algorithm
 SECRET_KEY = os.getenv("JWT_SECRET_KEY")

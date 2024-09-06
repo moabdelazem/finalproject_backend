@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy the dependencies file to the working directory
 COPY requirements.txt requirements.txt
 
+# Update Pip
+RUN pip install --upgrade pip
+
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
 
@@ -17,4 +20,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the FastAPI application
-CMD ["fastapi", "run", "run.py"]
+CMD ["uvicorn", "run:app", "--host", "0.0.0.0"]
