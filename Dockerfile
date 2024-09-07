@@ -11,7 +11,7 @@ COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 
 # Install any needed packages specified in requirements.txt
-RUN pip install -r requirements.txt
+RUN pip install -r  requirements.txt
 
 # Copy the content of the local src directory to the working directory
 COPY . .
@@ -20,4 +20,4 @@ COPY . .
 EXPOSE 8000
 
 # Run the FastAPI application
-CMD ["uvicorn", "run:app", "--host", "0.0.0.0"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0"]

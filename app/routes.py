@@ -15,13 +15,13 @@ router = APIRouter()
 
 
 class UserCreateRequest(BaseModel):
-    name: str
+    username: str
     password: str
     is_admin: bool = False
 
 
 class UserLoginRequest(BaseModel):
-    name: str
+    username: str
     password: str
 
 
@@ -70,7 +70,8 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
 def get_users(db: Session = Depends(get_db)):
     users = crud.get_users(db)
     return [
-        {"id": user.id, "name": user.name, "is_admin": user.is_admin} for user in users
+        {"id": user.id, "username": user.username, "is_admin": user.is_admin}
+        for user in users
     ]
 
 
@@ -79,7 +80,7 @@ def get_user(user_id: int, db: Session = Depends(get_db)):
     user = crud.get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    return {"id": user.id, "name": user.name, "is_admin": user.is_admin}
+    return {"id": user.id, "username": user.username, "is_admin": user.is_admin}
 
 
 @router.get("/books", response_model=List[dict])
@@ -117,29 +118,30 @@ def get_book(book_id: int, db: Session = Depends(get_db)):
 
 @router.post("/users", response_model=dict)
 def create_user(user: UserCreateRequest, db: Session = Depends(get_db)):
-    db_user = crud.create_user(db, user.name, user.password, user.is_admin)
-    return {"id": db_user.id, "name": db_user.name, "is_admin": db_user.is_admin}
-
-
-router.post("/register", response_model=dict)
+    db_user = crud.create_user(db, user.username, user.password, user.is_admin)
+    return {"id": db_user.id, "name": db_user.username, "is_admin": db_user.is_admin}
 
 
 @router.post("/register", response_model=dict)
 def register(user: UserCreateRequest, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_name(db, user.name)
+    db_user = crud.get_user_by_name(db, user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="User already registered")
-    db_user = crud.create_user(db, user.name, user.password, user.is_admin)
-    return {"id": db_user.id, "name": db_user.name, "is_admin": db_user.is_admin}
+    db_user = crud.create_user(db, user.username, user.password, user.is_admin)
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": db_user.username}, expires_delta=access_token_expires
+    )
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/login", response_model=Token)
 def login(user: UserLoginRequest, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_name(db, user.name)
+    db_user = crud.get_user_by_name(db, user.username)
     if not db_user or not crud.verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": db_user.name}, expires_delta=access_token_expires
+        data={"sub": db_user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}

@@ -24,7 +24,7 @@ def get_book_by_id(db: Session, book_id: int) -> Optional[Book]:
 
 
 def get_user_by_name(db: Session, name: str) -> Optional[User]:
-    return db.query(User).filter(User.name == name).first()
+    return db.query(User).filter(User.username == name).first()
 
 
 def create_book(
@@ -37,9 +37,9 @@ def create_book(
     return db_book
 
 
-def create_user(db: Session, name: str, password: str, is_admin: bool):
+def create_user(db: Session, username: str, password: str, is_admin: bool):
     hashed_password = pwd_context.hash(password)
-    db_user = User(name=name, password=hashed_password, is_admin=is_admin)
+    db_user = User(username=username, password=hashed_password, is_admin=is_admin)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
@@ -51,9 +51,9 @@ def verify_password(plain_password: str, hashed_password: str):
 
 
 # Create Superuser
-def create_superuser(db: Session, name: str, password: str) -> User:
+def create_superuser(db: Session, username: str, password: str) -> User:
     hashed_password = User.hash_password(password)
-    db_user = User(name=name, password=hashed_password, is_admin=True)
+    db_user = User(name=username, password=hashed_password, is_admin=True)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
