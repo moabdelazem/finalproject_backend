@@ -1,5 +1,4 @@
 fastapi
 uvicorn
 sqlalchemy
-passlib[bycrypt]
-python-jose[cryptography]
+sqlmodel
